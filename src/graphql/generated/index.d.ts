@@ -5,7 +5,6 @@ import {
   Observable,
 } from '@genql/runtime'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-export * from './schema'
 import {
   query_rootRequest,
   query_rootPromiseChain,
@@ -14,6 +13,7 @@ import {
   subscription_rootObservableChain,
   subscription_root,
 } from './schema'
+export * from './schema'
 export declare const createClient: (options?: ClientOptions) => Client
 export declare const everything: { __scalar: boolean }
 export declare const version: string

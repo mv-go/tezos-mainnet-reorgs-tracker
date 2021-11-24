@@ -11,7 +11,7 @@ assertSameVersion(version)
 
 module.exports.version = version
 
-module.exports.createClient = function(options) {
+module.exports.createClient = function (options) {
   options = options || {}
   var optionsCopy = {
     url: 'https://reorgs.staging.dipdup.net/v1/graphql',
@@ -115,13 +115,13 @@ module.exports.enumreorgsSelectColumn = {
   to_level: 'to_level',
 }
 
-module.exports.generateQueryOp = function(fields) {
+module.exports.generateQueryOp = function (fields) {
   return generateGraphqlOperation('query', typeMap.Query, fields)
 }
-module.exports.generateMutationOp = function(fields) {
+module.exports.generateMutationOp = function (fields) {
   return generateGraphqlOperation('mutation', typeMap.Mutation, fields)
 }
-module.exports.generateSubscriptionOp = function(fields) {
+module.exports.generateSubscriptionOp = function (fields) {
   return generateGraphqlOperation('subscription', typeMap.Subscription, fields)
 }
 module.exports.everything = {
