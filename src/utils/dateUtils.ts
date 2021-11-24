@@ -7,7 +7,10 @@ import i18n from '@/i18n'
 export const dateFormatter = new Intl.DateTimeFormat(
   i18n.locale,
   {
-    dateStyle: 'short',
-    timeStyle: 'short',
+    year: '2-digit',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
   },
 )
