@@ -71,7 +71,7 @@ export default class ConnectionWidget
 
   private startUpdater (): void {
     this.updateSyncStatus()
-    this.updaterInterval = setInterval(
+    this.updaterInterval = window.setInterval(
       () => this.updateSyncStatus(),
       1000,
     )
