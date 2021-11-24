@@ -1,20 +1,7 @@
-import { createClient, everything } from './generated'
-
-const hostname = 'reorgs.staging.dipdup.net'
-const pathname = '/v1/graphql'
-const queryURL = 'https://' + hostname + pathname
-const wsURL = 'wss://' + hostname + pathname
-
-const query = createClient({
-  url: queryURL,
-})
-
-const subscriber = createClient({
-  url: wsURL,
-})
+import { query } from './query'
+import { subscriptions } from './subscriptions'
 
 export {
   query,
-  subscriber,
-  everything,
+  subscriptions,
 }

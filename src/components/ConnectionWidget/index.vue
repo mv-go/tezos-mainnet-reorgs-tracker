@@ -4,11 +4,24 @@
       Connection
     </div>
     <SectionStatus :synced="isSynced" />
+
+    <v-skeleton-loader
+      v-if="!headBlock"
+      type="list-item-three-line"
+    />
     <SectionHeadBlock
+      v-else
       :date="headDate"
       :level="headBlock.level"
     />
+
+    <v-skeleton-loader
+      v-if="!headBlock"
+      type="button"
+      class="px-4"
+    />
     <SectionActions
+      v-else
       :hash="headBlock.hash"
       :show-resync="showRecyncBtn"
     />
@@ -16,17 +29,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { dateFormatter } from '@/utils/dateUtils'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import SectionActions from './SectionActions.vue'
 import SectionStatus from './SectionStatus.vue'
 import SectionHeadBlock from './SectionHeadBlock.vue'
-
-type HeadBlock = {
-  timestamp: string;
-  level: number;
-  hash: string;
-}
+import { dipdupStore } from '@/store'
+import { DipdupHead } from '@/graphql/subscriptions/dipdupHead'
+import { subscriptions } from '@/graphql'
 
 @Component({
   components: {
@@ -45,28 +54,35 @@ export default class ConnectionWidget
     return !this.isSynced
   }
 
-  get headBlock (): HeadBlock {
-    return {
-      timestamp: '2021-11-24T13:40:02+00:00',
-      level: 1890636,
-      hash: 'BLWEWJLhSkwFNCSGxuSKrgTAhfngiQ2LQ3sfT2XfLMke2kHF7Kb',
-    }
+  get headBlock (): DipdupHead | null {
+    return dipdupStore.state.head
   }
 
   get headDate (): Date {
-    return new Date(this.headBlock.timestamp)
-  }
-
-  get formattedHeadDate (): string {
-    return dateFormatter.format(this.headDate)
+    const b = this.headBlock
+    if (!b) throw new Error('Tried accessing head date on non-existing block')
+    return new Date(b.timestamp)
   }
 
   private created (): void {
     this.startUpdater()
+    subscriptions.dipdupHead.init()
   }
 
   private beforeDestroyed (): void {
     this.stopUpdater()
+  }
+
+  /**
+   * This is required to immediately react on the first received head.
+   * Not so necessary to force update on every new block afterwards.
+   */
+  @Watch('headBlock')
+  onHeadBlockChanged (
+    n: ConnectionWidget['headBlock'],
+    o: ConnectionWidget['headBlock'],
+  ): void {
+    if (!!n && !o) this.updateSyncStatus()
   }
 
   private startUpdater (): void {
@@ -82,6 +98,7 @@ export default class ConnectionWidget
   }
 
   private updateSyncStatus (): void {
+    if (!this.headBlock) return
     const n = Date.now()
     const h = this.headDate.getTime()
     this.isSynced = n - h <= 2 * this.BLOCK_TIME
