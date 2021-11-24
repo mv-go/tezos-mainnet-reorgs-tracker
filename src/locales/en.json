@@ -1,3 +1,14 @@
 {
-  "message": "hello i18n !!"
+  "message": "hello i18n !!",
+  "status": {
+    "synced": {
+      "label": "synced",
+      "caption": "Last known block was created less than 2x block times ago"
+    },
+    "notSynced": {
+      "label": "not synced",
+      "caption": "Last known block was created more than 2x block times ago"
+    },
+    "resync": "resync"
+  }
 }

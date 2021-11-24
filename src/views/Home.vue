@@ -1,16 +1,21 @@
 <template>
-  <hello-world />
+  <div class="d-flex flex-wrap align-start pa-4">
+    <ConnectionWidget class="col-12 col-sm-6 col-md-4 col-lg-3" />
+    <hello-world />
+  </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import HelloWorld from '../components/HelloWorld.vue'
+import { Component, Vue } from 'vue-property-decorator'
+import ConnectionWidget from '@/components/ConnectionWidget/index.vue'
 
-export default Vue.extend({
-  name: 'Home',
-
+@Component({
   components: {
-    HelloWorld
-  }
+    HelloWorld,
+    ConnectionWidget,
+  },
 })
+export default class Home extends Vue {
+}
 </script>
