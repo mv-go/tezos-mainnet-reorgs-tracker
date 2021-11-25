@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { createStore, Module } from 'vuex-smart-module'
 import dipdupModule from './modules/dipdup'
+import reorgsModule from './modules/reorgs'
 
 Vue.use(Vuex)
 
@@ -12,6 +13,7 @@ const store = createStore(
   new Module({
     modules: {
       dipdupModule,
+      reorgsModule,
     },
   }),
 
@@ -22,5 +24,6 @@ const store = createStore(
 )
 
 export const dipdupStore = dipdupModule.context(store)
+export const reorgsStore = reorgsModule.context(store)
 
 export default store

@@ -17,7 +17,7 @@
       <v-list-item-subtitle>
         Incidents h/d/w
         <span class="font-weight-bold pl-2">
-          0 / 3 / 21
+          {{ formattedReorgs }}
         </span>
       </v-list-item-subtitle>
     </v-list-item-content>
@@ -29,6 +29,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { dateFormatter } from '@/utils/dateUtils'
 import SectionActions from './SectionActions.vue'
 import SectionStatus from './SectionStatus.vue'
+import { ReorgsCountLatest } from '@/store/modules/reorgs/types'
 
 @Component({
   components: {
@@ -47,8 +48,20 @@ export default class SectionHeadBlock extends Vue {
     required: true,
   }) readonly level!: number
 
+  // TODO: refactor to either using class or use custom validator
+  @Prop({
+    type: Object,
+    required: true,
+  }) readonly reorgsCount!: ReorgsCountLatest
+
   get formattedDate (): string {
     return dateFormatter.format(this.date)
+  }
+
+  get formattedReorgs (): string {
+    const { h, d, w } = this.reorgsCount
+    console.warn('rc', this.reorgsCount)
+    return [h, d, w].join(' / ')
   }
 }
 </script>

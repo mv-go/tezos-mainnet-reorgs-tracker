@@ -6,13 +6,14 @@
     <SectionStatus :synced="isSynced" />
 
     <v-skeleton-loader
-      v-if="!headBlock"
+      v-if="!headBlock || !reorgsCount"
       type="list-item-three-line"
     />
     <SectionHeadBlock
       v-else
       :date="headDate"
       :level="headBlock.level"
+      :reorgs-count="reorgsCount"
     />
 
     <v-skeleton-loader
@@ -33,9 +34,10 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import SectionActions from './SectionActions.vue'
 import SectionStatus from './SectionStatus.vue'
 import SectionHeadBlock from './SectionHeadBlock.vue'
-import { dipdupStore } from '@/store'
+import { dipdupStore, reorgsStore } from '@/store'
 import { DipdupHead } from '@/graphql/subscriptions/dipdupHead'
 import { subscriptions } from '@/graphql'
+import { ReorgsCountLatest } from '@/store/modules/reorgs/types'
 
 @Component({
   components: {
@@ -64,9 +66,18 @@ export default class ConnectionWidget
     return new Date(b.timestamp)
   }
 
+  get reorgsCount (): ReorgsCountLatest | null {
+    const r = reorgsStore.state.countLatest
+
+    // TODO: refactor to using skeletons inside SectionHeadBlock component
+    // make sure all reorgs are loaded
+    return Object.keys(r).some(k => k === null) ? null : r
+  }
+
   private created (): void {
     this.startUpdater()
     subscriptions.dipdupHead.init()
+    subscriptions.reorgsCountLatest.init()
   }
 
   private beforeDestroyed (): void {
