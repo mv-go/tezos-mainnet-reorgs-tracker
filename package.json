@@ -14,6 +14,7 @@
     "@genql/runtime": "^2.8.0",
     "copy-to-clipboard": "^3.3.1",
     "core-js": "^3.6.5",
+    "d3": "^7.1.1",
     "graphql": "^15.7.2",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@genql/cli": "^2.8.0",
+    "@types/d3": "^7.1.0",
     "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
