@@ -60,7 +60,6 @@ export default class SectionHeadBlock extends Vue {
 
   get formattedReorgs (): string {
     const { h, d, w } = this.reorgsCount
-    console.warn('rc', this.reorgsCount)
     return [h, d, w].join(' / ')
   }
 }
