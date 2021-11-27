@@ -20,6 +20,8 @@ import { reorgsStore } from '@/store'
 import SectionControls from './SectionControls.vue'
 
 const DEFAULT_TIMEFRAME: ReorgsTimeframe = 'w'
+const DEFAULT_NUM_BARS = 5
+
 @Component({
   components: {
     SectionControls,
@@ -57,7 +59,9 @@ export default class ChartWidget extends Vue {
   }
 
   private prepareDataForChart (d: Record<string, number>): ChartData {
-    return Object.entries(d).map(e => ({ date: e[0], value: e[1] }))
+    return Object.entries(d)
+      .slice(0, DEFAULT_NUM_BARS)
+      .map(e => ({ date: e[0], value: e[1] }))
   }
 
   private updateChart (): void {
