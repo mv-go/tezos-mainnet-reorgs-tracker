@@ -8,6 +8,14 @@ class ModuleMutations extends Mutations<State> {
   }): void {
     this.state.countLatest[p.timeframe] = p.count
   }
+
+  updateStats (
+    p: { timeframe: ReorgsTimeframe, data: Record<string, number> }): void {
+    this.state.stats[p.timeframe] = {
+      ...this.state.stats[p.timeframe],
+      ...p.data,
+    }
+  }
 }
 
 export default ModuleMutations

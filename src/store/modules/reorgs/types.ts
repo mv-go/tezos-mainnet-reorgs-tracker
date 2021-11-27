@@ -12,3 +12,7 @@ export type ReorgsCountLatest = Record<ReorgsTimeframe, unknown> & {
   d: Reorgs1d | null;
   w: Reorgs1w | null;
 }
+
+export type ReorgsStats = {
+  [k in ReorgsTimeframe]: Record<string, number>
+}
