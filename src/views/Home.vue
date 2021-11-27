@@ -1,7 +1,23 @@
 <template>
-  <div class="d-flex flex-wrap align-start pa-4">
-    <ConnectionWidget class="col-12 col-sm-6 col-md-4 col-lg-3" />
-    <ChartWidget class="col-12 col-sm-6 col-md-4 col-lg-3" />
+  <div>
+    <v-container>
+      <v-row>
+        <v-col
+          cols="12"
+          sm="6"
+          md="6"
+        >
+          <ConnectionWidget />
+        </v-col>
+        <v-col
+          cols="12"
+          sm="6"
+          md="6"
+        >
+          <ChartWidget />
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 

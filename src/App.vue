@@ -10,7 +10,7 @@
       </div>
     </v-app-bar>
 
-    <v-main class="tz-main align-self-center">
+    <v-main class="align-self-center">
       <router-view />
     </v-main>
   </v-app>
@@ -27,9 +27,3 @@ export default Vue.extend({
   }),
 })
 </script>
-
-<style lang="sass" scoped>
-@import '~vuetify/src/styles/styles.sass'
-.tz-main
-  max-width: map-get($grid-breakpoints, 'md') !important
-</style>
