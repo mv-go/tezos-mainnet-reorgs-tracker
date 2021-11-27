@@ -19,7 +19,7 @@
     <v-skeleton-loader
       v-if="!headBlock"
       type="button"
-      class="px-4"
+      class="px-4 pb-4"
     />
     <SectionActions
       v-else
