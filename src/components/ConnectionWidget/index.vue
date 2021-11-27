@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <div class="text-overline px-4">
-      Connection
+      {{ $t('connection.title') }}
     </div>
     <SectionStatus :synced="isSynced" />
 
@@ -50,7 +50,7 @@ export default class ConnectionWidget
   extends Vue {
   private isSynced = false
   private updaterInterval = 0
-  private readonly BLOCK_TIME = 1000 * 60 * 60
+  private readonly BLOCK_TIME = 1000 * 30 // 30 sec
 
   get showRecyncBtn (): boolean {
     return !this.isSynced

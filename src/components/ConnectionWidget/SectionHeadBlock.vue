@@ -1,21 +1,21 @@
 <template>
   <v-list-item three-line>
     <v-list-item-content>
-      <v-list-item-title>Head block</v-list-item-title>
+      <v-list-item-title>{{ $t('connection.head.headBlock') }}</v-list-item-title>
       <v-list-item-subtitle>
-        Generation time
+        {{ $t('connection.head.generationTime') }}
         <span class="font-weight-bold pl-2">
           {{ formattedDate }}
         </span>
       </v-list-item-subtitle>
       <v-list-item-subtitle>
-        Level
+        {{ $t('connection.head.level') }}
         <span class="font-weight-bold pl-2">
           {{ level }}
         </span>
       </v-list-item-subtitle>
       <v-list-item-subtitle>
-        Incidents h/d/w
+        {{ $t('connection.head.incidents') }}
         <span class="font-weight-bold pl-2">
           {{ formattedReorgs }}
         </span>

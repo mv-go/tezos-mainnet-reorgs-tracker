@@ -4,7 +4,7 @@
       depressed
       @click="copyHash"
     >
-      Copy block hash
+      {{ $t('connection.actions.copyHash') }}
     </v-btn>
     <v-btn
       v-if="showResync"
@@ -13,7 +13,7 @@
       color="primary"
       @click="resync"
     >
-      {{ $t('status.resync') }}
+      {{ $t('connection.actions.resync') }}
     </v-btn>
   </v-card-actions>
 </template>

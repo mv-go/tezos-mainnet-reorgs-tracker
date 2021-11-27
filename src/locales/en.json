@@ -1,15 +1,27 @@
 {
   "message": "hello i18n !!",
-  "status": {
-    "synced": {
-      "label": "synced",
-      "caption": "Last known block was created less than 2x block times ago"
+  "connection": {
+    "title": "Connection",
+    "status": {
+      "synced": {
+        "label": "synced",
+        "caption": "Last known block was created less than 2x block times ago"
+      },
+      "notSynced": {
+        "label": "not synced",
+        "caption": "Last known block was created more than 2x block times ago"
+      }
     },
-    "notSynced": {
-      "label": "not synced",
-      "caption": "Last known block was created more than 2x block times ago"
+    "head": {
+      "headBlock": "Head block",
+      "generationTime": "Generation time",
+      "level": "Level",
+      "incidents": "Incidents h/d/w"
     },
-    "resync": "resync"
+    "actions": {
+      "copyHash": "Copy block hash",
+      "resync": "resync"
+    }
   },
   "chart": {
     "title": "Incidents stats",
