@@ -3,29 +3,95 @@
     <div class="text-overline px-4">
       Incidents stats
     </div>
+    <v-btn-toggle
+      :value="timeframeIndex"
+      dense
+      borderless
+      mandatory
+      active-class="primary white--text"
+      class="px-4 pt-4"
+      @change="onTimeframe"
+    >
+      <v-btn
+        v-for="o in timeframeOptions"
+        :key="o.key"
+      >
+        {{ o.title }}
+      </v-btn>
+    </v-btn-toggle>
     <div
       ref="chart"
+      class="pa-4"
     />
   </v-card>
 </template>
 
 <script lang="ts">
 import { Component, Ref, Vue } from 'vue-property-decorator'
-import { datum } from './data'
+import { day, hour, week } from './data'
 import { ChartData, ChartRenderer } from './ChartRenderer'
+import { ReorgsTimeframe } from '@/store/modules/reorgs/types'
+
+type TimeframeOption = {
+  title: string;
+  key: ReorgsTimeframe;
+}
+
+// eslint-disable-next-line camelcase
+type RawData = Array<{ bucket: string; num_accidents: number; }>
 
 @Component
 export default class ConnectionWidget extends Vue {
   @Ref('chart') readonly chart!: HTMLDivElement | undefined
 
   private renderer: ChartRenderer | null = null
+  private timeframeIndex = 1 // day
 
-  get preparedDatum (): ChartData {
-    return datum.map(e => ({ date: e.bucket, value: e.num_accidents }))
+  get preparedData (): ChartData {
+    let d: RawData
+    if (this.selectedTimeframe === 'h') d = hour
+    else if (this.selectedTimeframe === 'd') d = day
+    else if (this.selectedTimeframe === 'w') d = week
+    else throw new Error('Unexpected selected timefram')
+
+    return this.prepareDataForChart(d)
+  }
+
+  get selectedTimeframe (): ReorgsTimeframe {
+    return this.timeframeOptions[this.timeframeIndex].key
+  }
+
+  get timeframeOptions (): TimeframeOption[] {
+    return [
+      {
+        key: 'h',
+        title: 'Hour',
+      },
+      {
+        key: 'd',
+        title: 'Day',
+      },
+      {
+        key: 'w',
+        title: 'Week',
+      },
+    ]
   }
 
   mounted (): void {
     this.renderChart()
+  }
+
+  private prepareDataForChart (d: RawData): ChartData {
+    return d.map(e => ({ date: e.bucket, value: e.num_accidents }))
+  }
+
+  private onTimeframe (i: number): void {
+    this.timeframeIndex = i
+
+    this.renderer
+      ? this.renderer.updateData(this.preparedData, this.selectedTimeframe)
+      : this.renderChart()
   }
 
   private renderChart (): void {
@@ -45,11 +111,12 @@ export default class ConnectionWidget extends Vue {
     }
 
     this.renderer = new ChartRenderer(
-      this.preparedDatum,
+      this.preparedData,
       {
         rootNode: this.chart,
         width: 400,
         height: 400,
+        timeframe: this.selectedTimeframe,
       },
     )
   }

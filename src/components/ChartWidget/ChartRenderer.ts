@@ -1,4 +1,5 @@
-import { Axis, axisBottom, axisLeft, create, NumberValue, ScaleBand, scaleBand, ScaleLinear, scaleLinear, select, timeDay, timeFormat } from 'd3'
+import { ReorgsTimeframe } from '@/store/modules/reorgs/types'
+import { Axis, axisBottom, axisLeft, create, NumberValue, ScaleBand, scaleBand, ScaleLinear, scaleLinear, select, timeDay, timeFormat, timeHour, TimeInterval, timeWeek } from 'd3'
 
 export type ChartData = {
   date: string;
@@ -9,12 +10,18 @@ type ChartParams = {
   rootNode: HTMLElement;
   height: number;
   width: number;
+  timeframe: ReorgsTimeframe;
+}
+
+type XAxisTicksParams = {
+  ticks: TimeInterval | null;
+  format: string;
 }
 
 export class ChartRenderer {
   private static readonly marginTop = 10
   private static readonly marginRight = 0
-  private static readonly marginBottom = 40
+  private static readonly marginBottom = 45
   private static readonly marginLeft = 25
   private static readonly xPadding = 0.1
   private static readonly axisStyling = {
@@ -25,32 +32,35 @@ export class ChartRenderer {
   private readonly rootNode: HTMLElement
   private readonly height: number
   private readonly width: number
-  private readonly yMax: number
-  private readonly yDomain: [number, number]
   private readonly yRange: [number, number]
-  private readonly xDomain: string[]
   private readonly xRange: [number, number]
-  private readonly data: ChartData
+
+  private timeframe: ReorgsTimeframe
+  private data: ChartData
 
   constructor (data: ChartData, params: ChartParams) {
     this.data = data
+    this.timeframe = params.timeframe
 
     this.rootNode = params.rootNode
     this.height = params.height
     this.width = params.width
 
-    this.yMax = Math.max(...this.data.map(e => e.value))
-    this.yDomain = [0, this.yMax]
     this.yRange = [
       this.height - ChartRenderer.marginBottom,
       ChartRenderer.marginTop,
     ]
 
-    this.xDomain = this.data.map(e => e.date)
     this.xRange = [
       this.width - ChartRenderer.marginRight,
       ChartRenderer.marginLeft,
     ]
+  }
+
+  public updateData (data: ChartData, timeframe: ReorgsTimeframe): void {
+    this.data = data
+    this.timeframe = timeframe
+    this.render()
   }
 
   public render (): void {
@@ -60,8 +70,25 @@ export class ChartRenderer {
     svg.append(() => this.xAxisGroup.node())
     svg.append(() => this.barsGroup.node())
 
+    // remove outdated
+    select(this.rootNode)
+      .selectAll('svg')
+      .remove()
+
     select(this.rootNode)
       .append(() => svg.node())
+  }
+
+  private get yDomain (): [number, number] {
+    return [0, this.yMax]
+  }
+
+  private get yMax (): number {
+    return Math.max(...this.data.map(e => e.value))
+  }
+
+  private get xDomain (): string[] {
+    return this.data.map(e => e.date)
   }
 
   private get xScale (): ScaleBand<string> {
@@ -78,10 +105,29 @@ export class ChartRenderer {
   }
 
   private get xAxis (): Axis<string> {
+    const { ticks, format } = this.xAxisTicksParams
     return axisBottom(this.xScale)
-      .ticks(timeDay.every(1))
-      .tickFormat(t => timeFormat('%d %b')(new Date(t)))
+      .ticks(ticks)
+      .tickFormat(t => timeFormat(format)(new Date(t)))
       .tickSizeOuter(0)
+  }
+
+  private get xAxisTicksParams (): XAxisTicksParams {
+    let ticks, format
+    if (this.timeframe === 'h') {
+      ticks = timeHour.every(1)
+      format = '%H:%M'
+    } else if (this.timeframe === 'd') {
+      ticks = timeDay.every(1)
+      format = '%d %b'
+    } else if (this.timeframe === 'w') {
+      ticks = timeWeek.every(1)
+      format = '%d %b'
+    } else {
+      throw new Error('Unexpected timeframe.')
+    }
+
+    return { ticks, format }
   }
 
   private get yAxis (): Axis<NumberValue> {
@@ -95,7 +141,6 @@ export class ChartRenderer {
       .attr('height', this.height)
       .attr('viewBox', `${[0, 0, this.width, this.height]}`)
       .attr('style', 'max-width: 100%; height: auto; height: intrinsic;')
-      // .attr('class', 'primary--text')
   }
 
   private get yAxisGroup () {
@@ -149,7 +194,7 @@ export class ChartRenderer {
     return g
   }
 
-  // moving to a separate method to isolate typecasting in one place
+  // as a separate method to isolate typecasting in one place
   private createGroup () {
     // TODO: look for a way to make d3 types properly understand return type
     return create<SVGSVGElement>('svg:g')
