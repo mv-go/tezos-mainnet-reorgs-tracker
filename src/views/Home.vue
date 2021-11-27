@@ -16,6 +16,13 @@
         >
           <ChartWidget />
         </v-col>
+        <v-col
+          cols="12"
+          sm="6"
+          md="6"
+        >
+          <FeedWidget />
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -25,11 +32,13 @@
 import { Component, Vue } from 'vue-property-decorator'
 import ConnectionWidget from '@/components/ConnectionWidget/index.vue'
 import ChartWidget from '@/components/ChartWidget/index.vue'
+import FeedWidget from '@/components/FeedWidget/index.vue'
 
 @Component({
   components: {
     ConnectionWidget,
     ChartWidget,
+    FeedWidget,
   },
 })
 export default class Home extends Vue {
