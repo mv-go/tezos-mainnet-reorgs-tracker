@@ -8,9 +8,8 @@ export type ChartData = {
 
 type ChartParams = {
   rootNode: HTMLElement;
-  height: number;
-  width: number;
   timeframe: ReorgsTimeframe;
+  data: ChartData;
 }
 
 type XAxisTicksParams = {
@@ -19,6 +18,8 @@ type XAxisTicksParams = {
 }
 
 export class ChartRenderer {
+  private static readonly height = 400
+  private static readonly width = 400
   private static readonly marginTop = 10
   private static readonly marginRight = 0
   private static readonly marginBottom = 45
@@ -29,32 +30,24 @@ export class ChartRenderer {
     lines: 'grey--text text--lighten-2',
   }
 
-  private readonly rootNode: HTMLElement
-  private readonly height: number
-  private readonly width: number
-  private readonly yRange: [number, number]
-  private readonly xRange: [number, number]
+  private static readonly yRange = [
+    ChartRenderer.height - ChartRenderer.marginBottom,
+    ChartRenderer.marginTop,
+  ]
 
+  private static readonly xRange = [
+    ChartRenderer.width - ChartRenderer.marginRight,
+    ChartRenderer.marginLeft,
+  ]
+
+  private readonly rootNode: HTMLElement
   private timeframe: ReorgsTimeframe
   private data: ChartData
 
-  constructor (data: ChartData, params: ChartParams) {
-    this.data = data
+  constructor (params: ChartParams) {
+    this.data = params.data
     this.timeframe = params.timeframe
-
     this.rootNode = params.rootNode
-    this.height = params.height
-    this.width = params.width
-
-    this.yRange = [
-      this.height - ChartRenderer.marginBottom,
-      ChartRenderer.marginTop,
-    ]
-
-    this.xRange = [
-      this.width - ChartRenderer.marginRight,
-      ChartRenderer.marginLeft,
-    ]
   }
 
   public updateData (data: ChartData, timeframe: ReorgsTimeframe): void {
@@ -94,14 +87,14 @@ export class ChartRenderer {
   private get xScale (): ScaleBand<string> {
     return scaleBand()
       .domain(this.xDomain)
-      .range(this.xRange)
+      .range(ChartRenderer.xRange)
       .padding(ChartRenderer.xPadding)
   }
 
   private get yScale (): ScaleLinear<number, number> {
     return scaleLinear()
       .domain(this.yDomain)
-      .range(this.yRange)
+      .range(ChartRenderer.yRange)
   }
 
   private get xAxis (): Axis<string> {
@@ -137,9 +130,7 @@ export class ChartRenderer {
 
   private get svg () {
     return create('svg')
-      .attr('width', this.width)
-      .attr('height', this.height)
-      .attr('viewBox', `${[0, 0, this.width, this.height]}`)
+      .attr('viewBox', `${[0, 0, ChartRenderer.width, ChartRenderer.height]}`)
       .attr('style', 'max-width: 100%; height: auto; height: intrinsic;')
   }
 
@@ -161,7 +152,7 @@ export class ChartRenderer {
     const g = this.createGroup()
       .attr(
         'transform',
-        `translate(0,${this.height - ChartRenderer.marginBottom})`,
+        `translate(0,${ChartRenderer.height - ChartRenderer.marginBottom})`,
       )
       .attr('class', ChartRenderer.axisStyling.lines)
 

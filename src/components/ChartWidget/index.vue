@@ -110,15 +110,11 @@ export default class ConnectionWidget extends Vue {
       throw new Error('Tried creating renderer on a non-existing DOM element')
     }
 
-    this.renderer = new ChartRenderer(
-      this.preparedData,
-      {
-        rootNode: this.chart,
-        width: 400,
-        height: 400,
-        timeframe: this.selectedTimeframe,
-      },
-    )
+    this.renderer = new ChartRenderer({
+      rootNode: this.chart,
+      timeframe: this.selectedTimeframe,
+      data: this.preparedData,
+    })
   }
 }
 </script>
