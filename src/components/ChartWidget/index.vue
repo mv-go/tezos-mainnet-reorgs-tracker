@@ -19,6 +19,7 @@ import { reorgsStatsCount } from '@/graphql/subscriptions/reorgsStatsCount'
 import { reorgsStore } from '@/store'
 import SectionControls from './SectionControls.vue'
 
+const DEFAULT_TIMEFRAME: ReorgsTimeframe = 'w'
 @Component({
   components: {
     SectionControls,
@@ -28,7 +29,7 @@ export default class ChartWidget extends Vue {
   @Ref('chart') readonly chart!: HTMLDivElement | undefined
 
   private renderer: ChartRenderer | null = null
-  private timeframe: ReorgsTimeframe = 'w'
+  private timeframe: ReorgsTimeframe = DEFAULT_TIMEFRAME
 
   get preparedData (): ChartData {
     let data: Record<string, number>
