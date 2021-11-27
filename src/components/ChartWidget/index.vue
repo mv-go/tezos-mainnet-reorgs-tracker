@@ -27,34 +27,34 @@
 </template>
 
 <script lang="ts">
-import { Component, Ref, Vue } from 'vue-property-decorator'
-import { day, hour, week } from './data'
+import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
 import { ChartData, ChartRenderer } from './ChartRenderer'
 import { ReorgsTimeframe } from '@/store/modules/reorgs/types'
+import { reorgsStatsCount } from '@/graphql/subscriptions/reorgsStatsCount'
+import { reorgsStore } from '@/store'
 
 type TimeframeOption = {
   title: string;
   key: ReorgsTimeframe;
 }
 
-// eslint-disable-next-line camelcase
-type RawData = Array<{ bucket: string; num_accidents: number; }>
-
 @Component
-export default class ConnectionWidget extends Vue {
+export default class ChartWidget extends Vue {
   @Ref('chart') readonly chart!: HTMLDivElement | undefined
 
   private renderer: ChartRenderer | null = null
-  private timeframeIndex = 1 // day
+  private timeframeIndex = 2 // week
 
   get preparedData (): ChartData {
-    let d: RawData
-    if (this.selectedTimeframe === 'h') d = hour
-    else if (this.selectedTimeframe === 'd') d = day
-    else if (this.selectedTimeframe === 'w') d = week
-    else throw new Error('Unexpected selected timefram')
+    let data: Record<string, number>
+    const { h, d, w } = reorgsStore.state.stats
 
-    return this.prepareDataForChart(d)
+    if (this.selectedTimeframe === 'h') data = h
+    else if (this.selectedTimeframe === 'd') data = d
+    else if (this.selectedTimeframe === 'w') data = w
+    else throw new Error('Unexpected selected timeframe')
+
+    return this.prepareDataForChart(data)
   }
 
   get selectedTimeframe (): ReorgsTimeframe {
@@ -78,17 +78,30 @@ export default class ConnectionWidget extends Vue {
     ]
   }
 
+  created (): void {
+    reorgsStatsCount.init()
+  }
+
   mounted (): void {
     this.renderChart()
   }
 
-  private prepareDataForChart (d: RawData): ChartData {
-    return d.map(e => ({ date: e.bucket, value: e.num_accidents }))
+  @Watch('preparedData')
+  onPreparedDataUpdated (): void {
+    this.onTimeframe(this.timeframeIndex)
+  }
+
+  private prepareDataForChart (d: Record<string, number>): ChartData {
+    return Object.entries(d).map(e => ({ date: e[0], value: e[1] }))
   }
 
   private onTimeframe (i: number): void {
     this.timeframeIndex = i
 
+    this.updateChart()
+  }
+
+  private updateChart (): void {
     this.renderer
       ? this.renderer.updateData(this.preparedData, this.selectedTimeframe)
       : this.renderChart()
