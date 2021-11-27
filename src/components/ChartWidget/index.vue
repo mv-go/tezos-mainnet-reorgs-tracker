@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <div class="text-overline px-4">
-      Incidents stats
+      {{ this.$t('chart.title') }}
     </div>
     <v-btn-toggle
       :value="timeframeIndex"
@@ -65,15 +65,15 @@ export default class ChartWidget extends Vue {
     return [
       {
         key: 'h',
-        title: 'Hour',
+        title: this.$t('chart.timeframes.hour').toString(),
       },
       {
         key: 'd',
-        title: 'Day',
+        title: this.$t('chart.timeframes.day').toString(),
       },
       {
         key: 'w',
-        title: 'Week',
+        title: this.$t('chart.timeframes.week').toString(),
       },
     ]
   }

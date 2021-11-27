@@ -10,5 +10,13 @@
       "caption": "Last known block was created more than 2x block times ago"
     },
     "resync": "resync"
+  },
+  "chart": {
+    "title": "Incidents stats",
+    "timeframes": {
+      "hour": "hour",
+      "day": "day",
+      "week": "week"
+    }
   }
 }
