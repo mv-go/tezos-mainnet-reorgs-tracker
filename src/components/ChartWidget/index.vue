@@ -20,7 +20,7 @@ import { reorgsStore } from '@/store'
 import SectionControls from './SectionControls.vue'
 
 const DEFAULT_TIMEFRAME: ReorgsTimeframe = 'w'
-const DEFAULT_NUM_BARS = 5
+const DEFAULT_NUM_BARS = 10
 
 @Component({
   components: {
