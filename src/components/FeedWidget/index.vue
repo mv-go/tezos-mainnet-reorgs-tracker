@@ -29,6 +29,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import ReorgListItem from './ReorgListItem.vue'
 import { ReorgItem } from './types'
 
+// TODO: add loading indicator - spinner or smth
 @Component({
   components: {
     ReorgListItem,
