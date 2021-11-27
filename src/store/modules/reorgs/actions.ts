@@ -10,6 +10,7 @@ import { ReorgsStats1hPayload } from '@/graphql/subscriptions/reorgsStatsCount/r
 import { ReorgsStats1wPayload } from '@/graphql/subscriptions/reorgsStatsCount/reorgsStatsCount1w'
 import { queries } from '@/graphql'
 import { Reorg } from './types'
+import { ReorgsFeedPayload } from '@/graphql/subscriptions/reorgsFeed'
 
 class ModuleActions extends Actions<
   State,
@@ -67,6 +68,10 @@ class ModuleActions extends Actions<
     this.mutations.updateStats({ timeframe: 'w', data })
   }
 
+  onReorgsFeedPayload (p: ReorgsFeedPayload): void {
+    p.reorgs.forEach(this.mutations.createOrUpdateReorgInFeed)
+  }
+
   async getReorgsFeed (): Promise<void> {
     const fromId = this.getters.oldestReorgIdInFeed
     if (fromId === 0 || this.state.feedIsLoading) return
@@ -83,7 +88,7 @@ class ModuleActions extends Actions<
       return Promise.reject(e)
     }
 
-    this.mutations.addToReorgsFeed(r)
+    this.mutations.appendToReorgsFeed(r)
     this.mutations.setFeedLoading(false)
   }
 }

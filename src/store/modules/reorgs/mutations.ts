@@ -17,8 +17,16 @@ class ModuleMutations extends Mutations<State> {
     }
   }
 
-  addToReorgsFeed (r: Reorg[]): void {
+  appendToReorgsFeed (r: Reorg[]): void {
     this.state.feed.push(...r)
+  }
+
+  createOrUpdateReorgInFeed (r: Reorg): void {
+    const index = this.state.feed.findIndex(i => i.id === r.id)
+
+    index === -1
+      ? this.state.feed.unshift(r)
+      : this.state.feed.splice(index, 1, r)
   }
 
   setFeedLoading (isLoading: boolean): void {
