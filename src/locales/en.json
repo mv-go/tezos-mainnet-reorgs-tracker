@@ -18,5 +18,15 @@
       "day": "day",
       "week": "week"
     }
+  },
+  "feed": {
+    "title": "Feed",
+    "listItem": {
+      "level": {
+        "from": "Level from",
+        "to": "to"
+      },
+      "id": "ID"
+    }
   }
 }

@@ -8,11 +8,11 @@
         {{ item.date }}
       </v-list-item-title>
       <v-list-item-subtitle class="font-weight-regular">
-        Level from
+        {{ $t('feed.listItem.level.from') }}
         <span class="font-weight-bold">
           {{ item.from }}
         </span>
-        to
+        {{ $t('feed.listItem.level.to') }}
         <span class="font-weight-bold">
           {{ item.to }}
         </span>
@@ -21,7 +21,7 @@
 
     <v-list-item-action class="mt-2">
       <v-list-item-action-text>
-        ID
+        {{ $t('feed.listItem.id') }}
         <span class="font-weight-bold">
           {{ item.id }}
         </span>

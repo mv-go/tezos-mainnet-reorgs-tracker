@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <div class="text-overline px-4">
-      Feed
+      {{ $t('feed.title') }}
     </div>
     <v-virtual-scroll
       :items="items"
