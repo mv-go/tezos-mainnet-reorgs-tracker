@@ -9,6 +9,7 @@ import { ReorgsStats1dPayload } from '@/graphql/subscriptions/reorgsStatsCount/r
 import { ReorgsStats1hPayload } from '@/graphql/subscriptions/reorgsStatsCount/reorgsStatsCount1h'
 import { ReorgsStats1wPayload } from '@/graphql/subscriptions/reorgsStatsCount/reorgsStatsCount1w'
 import { queries } from '@/graphql'
+import { Reorg } from './types'
 
 class ModuleActions extends Actions<
   State,
@@ -68,10 +69,22 @@ class ModuleActions extends Actions<
 
   async getReorgsFeed (): Promise<void> {
     const fromId = this.getters.oldestReorgIdInFeed
-    if (fromId && fromId <= 0) return
+    if (fromId === 0 || this.state.feedIsLoading) return
 
-    const r = await queries.reorgsFeed.getFromId(fromId)
-    this.mutations.addToReorgsFeed(r.reorgs)
+    this.mutations.setFeedLoading(true)
+
+    let r: Reorg[]
+    try {
+      const res = await queries.reorgsFeed.getFromId(fromId)
+      r = res.reorgs
+    } catch (e) {
+      // TODO!: better error handling
+      this.mutations.setFeedLoading(false)
+      return Promise.reject(e)
+    }
+
+    this.mutations.addToReorgsFeed(r)
+    this.mutations.setFeedLoading(false)
   }
 }
 

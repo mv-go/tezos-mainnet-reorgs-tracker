@@ -12,6 +12,7 @@
       <template v-slot:default="{ item }">
         <v-list-item
           :key="item.id"
+          v-intersect="(entries, obs, isInt) => onIntersect(item.id, isInt)"
           two-line
           dense
         >
@@ -52,9 +53,16 @@ import { reorgsStore } from '@/store'
 import { dateFormatter } from '@/utils/dateUtils'
 import { Component, Vue } from 'vue-property-decorator'
 
+type ReorgListItem = {
+  id: number;
+  from: number;
+  to: number;
+  date: string;
+}
+
 @Component
 export default class FeedWidget extends Vue {
-  private get items () {
+  private get items (): ReorgListItem[] {
     return reorgsStore.state.feed.map(r => ({
       id: r.id,
       from: r.from_level,
@@ -63,11 +71,19 @@ export default class FeedWidget extends Vue {
     }))
   }
 
-  private get length () {
-    return 7000
+  private get lastRenderableItemId (): number | undefined {
+    const item: ReorgListItem | undefined = this.items[this.items.length - 1]
+    return item?.id
   }
 
   created (): void {
+    reorgsStore.actions.getReorgsFeed()
+  }
+
+  private onIntersect (id: number, isIntersecting: boolean): void {
+    if (!isIntersecting) return
+    if (this.lastRenderableItemId && id > this.lastRenderableItemId) return
+
     reorgsStore.actions.getReorgsFeed()
   }
 }

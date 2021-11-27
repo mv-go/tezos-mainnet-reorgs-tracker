@@ -14,6 +14,7 @@ class ModuleState {
   }
 
   feed: Reorg[] = []
+  feedIsLoading = false
 }
 
 export default ModuleState

@@ -20,6 +20,10 @@ class ModuleMutations extends Mutations<State> {
   addToReorgsFeed (r: Reorg[]): void {
     this.state.feed.push(...r)
   }
+
+  setFeedLoading (isLoading: boolean): void {
+    this.state.feedIsLoading = isLoading
+  }
 }
 
 export default ModuleMutations
