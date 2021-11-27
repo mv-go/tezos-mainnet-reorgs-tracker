@@ -3,22 +3,7 @@
     <div class="text-overline px-4">
       {{ this.$t('chart.title') }}
     </div>
-    <v-btn-toggle
-      :value="timeframeIndex"
-      dense
-      borderless
-      mandatory
-      active-class="primary white--text"
-      class="px-4 pt-4"
-      @change="onTimeframe"
-    >
-      <v-btn
-        v-for="o in timeframeOptions"
-        :key="o.key"
-      >
-        {{ o.title }}
-      </v-btn>
-    </v-btn-toggle>
+    <SectionControls v-model="timeframe" />
     <div
       ref="chart"
       class="pa-4"
@@ -32,50 +17,29 @@ import { ChartData, ChartRenderer } from './ChartRenderer'
 import { ReorgsTimeframe } from '@/store/modules/reorgs/types'
 import { reorgsStatsCount } from '@/graphql/subscriptions/reorgsStatsCount'
 import { reorgsStore } from '@/store'
+import SectionControls from './SectionControls.vue'
 
-type TimeframeOption = {
-  title: string;
-  key: ReorgsTimeframe;
-}
-
-@Component
+@Component({
+  components: {
+    SectionControls,
+  },
+})
 export default class ChartWidget extends Vue {
   @Ref('chart') readonly chart!: HTMLDivElement | undefined
 
   private renderer: ChartRenderer | null = null
-  private timeframeIndex = 2 // week
+  private timeframe: ReorgsTimeframe = 'w'
 
   get preparedData (): ChartData {
     let data: Record<string, number>
     const { h, d, w } = reorgsStore.state.stats
 
-    if (this.selectedTimeframe === 'h') data = h
-    else if (this.selectedTimeframe === 'd') data = d
-    else if (this.selectedTimeframe === 'w') data = w
+    if (this.timeframe === 'h') data = h
+    else if (this.timeframe === 'd') data = d
+    else if (this.timeframe === 'w') data = w
     else throw new Error('Unexpected selected timeframe')
 
     return this.prepareDataForChart(data)
-  }
-
-  get selectedTimeframe (): ReorgsTimeframe {
-    return this.timeframeOptions[this.timeframeIndex].key
-  }
-
-  get timeframeOptions (): TimeframeOption[] {
-    return [
-      {
-        key: 'h',
-        title: this.$t('chart.timeframes.hour').toString(),
-      },
-      {
-        key: 'd',
-        title: this.$t('chart.timeframes.day').toString(),
-      },
-      {
-        key: 'w',
-        title: this.$t('chart.timeframes.week').toString(),
-      },
-    ]
   }
 
   created (): void {
@@ -88,22 +52,16 @@ export default class ChartWidget extends Vue {
 
   @Watch('preparedData')
   onPreparedDataUpdated (): void {
-    this.onTimeframe(this.timeframeIndex)
+    this.updateChart()
   }
 
   private prepareDataForChart (d: Record<string, number>): ChartData {
     return Object.entries(d).map(e => ({ date: e[0], value: e[1] }))
   }
 
-  private onTimeframe (i: number): void {
-    this.timeframeIndex = i
-
-    this.updateChart()
-  }
-
   private updateChart (): void {
     this.renderer
-      ? this.renderer.updateData(this.preparedData, this.selectedTimeframe)
+      ? this.renderer.updateData(this.preparedData, this.timeframe)
       : this.renderChart()
   }
 
@@ -125,7 +83,7 @@ export default class ChartWidget extends Vue {
 
     this.renderer = new ChartRenderer({
       rootNode: this.chart,
-      timeframe: this.selectedTimeframe,
+      timeframe: this.timeframe,
       data: this.preparedData,
     })
   }
