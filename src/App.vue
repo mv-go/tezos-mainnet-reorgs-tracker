@@ -5,7 +5,7 @@
       color="primary"
       dark
     >
-      <div class="text-h4 col-12 text-center">
+      <div class="text-h5 col-12 text-center text-truncate">
         Tezos mainnet reorgs tracker
       </div>
     </v-app-bar>
