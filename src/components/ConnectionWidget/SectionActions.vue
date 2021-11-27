@@ -41,9 +41,7 @@ export default class SectionActions extends Vue {
   }
 
   private resync (): void {
-    this.isLoading = true
-    console.error('RESYNC NOT IMPLEMENTED')
-    this.isLoading = false
+    throw new Error('RESYNC NOT IMPLEMENTED')
   }
 }
 </script>
