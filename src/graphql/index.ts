@@ -1,7 +1,7 @@
-import { query } from './query'
 import { subscriptions } from './subscriptions'
+import * as queries from './queries'
 
 export {
-  query,
+  queries,
   subscriptions,
 }
