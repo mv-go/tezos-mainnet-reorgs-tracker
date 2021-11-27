@@ -49,6 +49,7 @@
 </template>
 
 <script lang="ts">
+import { subscriptions } from '@/graphql'
 import { reorgsStore } from '@/store'
 import { dateFormatter } from '@/utils/dateUtils'
 import { Component, Vue } from 'vue-property-decorator'
@@ -78,6 +79,7 @@ export default class FeedWidget extends Vue {
 
   created (): void {
     reorgsStore.actions.getReorgsFeed()
+    subscriptions.reorgsFeed.init()
   }
 
   private onIntersect (id: number, isIntersecting: boolean): void {
