@@ -1,3 +1,4 @@
+import { ReorgsFeedQueryPayload } from '@/graphql/queries/reorgsFeed'
 import { Reorgs1d } from '@/graphql/subscriptions/reorgsCountLatest/reorgsCount1d'
 import { Reorgs1h } from '@/graphql/subscriptions/reorgsCountLatest/reorgsCount1h'
 import { Reorgs1w } from '@/graphql/subscriptions/reorgsCountLatest/reorgsCount1w'
@@ -16,3 +17,5 @@ export type ReorgsCountLatest = Record<ReorgsTimeframe, unknown> & {
 export type ReorgsStats = {
   [k in ReorgsTimeframe]: Record<string, number>
 }
+
+export type Reorg = ReorgsFeedQueryPayload['reorgs'][number]

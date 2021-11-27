@@ -1,4 +1,4 @@
-import { ReorgsCountLatest, ReorgsStats } from './types'
+import { Reorg, ReorgsCountLatest, ReorgsStats } from './types'
 
 class ModuleState {
   countLatest: ReorgsCountLatest = {
@@ -12,6 +12,8 @@ class ModuleState {
     h: {},
     w: {},
   }
+
+  feed: Reorg[] = []
 }
 
 export default ModuleState

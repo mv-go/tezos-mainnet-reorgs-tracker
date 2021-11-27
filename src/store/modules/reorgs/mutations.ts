@@ -1,6 +1,6 @@
 import { Mutations } from 'vuex-smart-module'
 import State from './state'
-import { ReorgsCountLatest, ReorgsTimeframe } from './types'
+import { Reorg, ReorgsCountLatest, ReorgsTimeframe } from './types'
 
 class ModuleMutations extends Mutations<State> {
   setCountLatest <T extends ReorgsTimeframe> (p: {
@@ -15,6 +15,10 @@ class ModuleMutations extends Mutations<State> {
       ...this.state.stats[p.timeframe],
       ...p.data,
     }
+  }
+
+  addToReorgsFeed (r: Reorg[]): void {
+    this.state.feed.push(...r)
   }
 }
 

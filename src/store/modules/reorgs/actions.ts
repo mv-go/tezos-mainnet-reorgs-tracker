@@ -8,6 +8,7 @@ import { Reorgs1wPayload } from '@/graphql/subscriptions/reorgsCountLatest/reorg
 import { ReorgsStats1dPayload } from '@/graphql/subscriptions/reorgsStatsCount/reorgsStatsCount1d'
 import { ReorgsStats1hPayload } from '@/graphql/subscriptions/reorgsStatsCount/reorgsStatsCount1h'
 import { ReorgsStats1wPayload } from '@/graphql/subscriptions/reorgsStatsCount/reorgsStatsCount1w'
+import { queries } from '@/graphql'
 
 class ModuleActions extends Actions<
   State,
@@ -63,6 +64,14 @@ class ModuleActions extends Actions<
       data[o.bucket] = o.num_accidents ?? 0
     })
     this.mutations.updateStats({ timeframe: 'w', data })
+  }
+
+  async getReorgsFeed (): Promise<void> {
+    const fromId = this.getters.oldestReorgIdInFeed
+    if (fromId && fromId <= 0) return
+
+    const r = await queries.reorgsFeed.getFromId(fromId)
+    this.mutations.addToReorgsFeed(r.reorgs)
   }
 }
 
