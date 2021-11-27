@@ -25,6 +25,7 @@ export class ChartRenderer {
   private static readonly marginBottom = 45
   private static readonly marginLeft = 25
   private static readonly xPadding = 0.1
+  private static readonly minYTicks = 5
   private static readonly axisStyling = {
     text: 'grey--text text--darken-2',
     lines: 'grey--text text--lighten-2',
@@ -77,7 +78,7 @@ export class ChartRenderer {
   }
 
   private get yMax (): number {
-    return Math.max(...this.data.map(e => e.value))
+    return Math.max(...this.data.map(e => e.value)) || ChartRenderer.minYTicks
   }
 
   private get xDomain (): string[] {
