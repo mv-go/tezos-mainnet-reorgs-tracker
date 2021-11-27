@@ -10,38 +10,11 @@
       class="my-4"
     >
       <template v-slot:default="{ item }">
-        <v-list-item
+        <ReorgListItem
           :key="item.id"
           v-intersect="(entries, obs, isInt) => onIntersect(item.id, isInt)"
-          two-line
-          dense
-        >
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ item.date }}
-            </v-list-item-title>
-            <v-list-item-subtitle class="font-weight-regular">
-              Level from
-              <span class="font-weight-bold">
-                {{ item.from }}
-              </span>
-              to
-              <span class="font-weight-bold">
-                {{ item.to }}
-              </span>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-
-          <v-list-item-action class="mt-2">
-            <v-list-item-action-text>
-              ID
-              <span class="font-weight-bold">
-                {{ item.id }}
-              </span>
-            </v-list-item-action-text>
-          </v-list-item-action>
-        </v-list-item>
-
+          :item="item"
+        />
         <v-divider class="mx-4" />
       </template>
     </v-virtual-scroll>
@@ -53,27 +26,26 @@ import { subscriptions } from '@/graphql'
 import { reorgsStore } from '@/store'
 import { dateFormatter } from '@/utils/dateUtils'
 import { Component, Vue } from 'vue-property-decorator'
+import ReorgListItem from './ReorgListItem.vue'
+import { ReorgItem } from './types'
 
-type ReorgListItem = {
-  id: number;
-  from: number;
-  to: number;
-  date: string;
-}
-
-@Component
+@Component({
+  components: {
+    ReorgListItem,
+  },
+})
 export default class FeedWidget extends Vue {
-  private get items (): ReorgListItem[] {
-    return reorgsStore.state.feed.map(r => ({
-      id: r.id,
-      from: r.from_level,
-      to: r.to_level,
-      date: dateFormatter.format(new Date(r.timestamp)),
-    }))
+  private get items (): ReorgItem[] {
+    return reorgsStore.state.feed.map(r => new ReorgItem(
+      r.id,
+      r.from_level,
+      r.to_level,
+      dateFormatter.format(new Date(r.timestamp)),
+    ))
   }
 
   private get lastRenderableItemId (): number | undefined {
-    const item: ReorgListItem | undefined = this.items[this.items.length - 1]
+    const item: ReorgItem | undefined = this.items[this.items.length - 1]
     return item?.id
   }
 
